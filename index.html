@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Folder Galery</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M4 6a2 2 0 012-2h5.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H18a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z'/></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a855f7'><path d='M4 6a2 2 0 012-2h5.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H18a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z'></path></svg>">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         dark: '#0f1014',
                         darker: '#0a0a0c',
-                        panel: '#1c1d24',
-                        panelHover: '#252630',
-                        accent: '#6366f1'
+                        panel: '#1a1b23',
+                        accent: '#a855f7'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
@@ -25,84 +31,110 @@
     </script>
     <style>
         :root { color-scheme: dark; }
-        body { background-color: #0f1014; color: #ffffff; overflow-x: hidden; }
+        body { background-color: #0f1014; color: #ffffff; overflow-x: hidden; font-family: 'Inter', sans-serif; }
         
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #0a0a0c; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-
-        .masonry-grid { column-count: 1; column-gap: 1.5rem; }
-        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
-        @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
-        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
-        @media (min-width: 1280px) { .masonry-grid { column-count: 5; } }
-        @media (min-width: 1536px) { .masonry-grid { column-count: 6; } }
-
-        .masonry-item { break-inside: avoid; margin-bottom: 1.5rem; transform: translateZ(0); }
-
-        .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-
-        img { transition: opacity 0.3s ease-in-out; }
-        .lazy-hidden { opacity: 0; }
-        .lazy-loaded { opacity: 1; }
-
-        .viewer-backdrop { backdrop-filter: blur(10px); background-color: rgba(0, 0, 0, 0.9); opacity: 0; transition: opacity 0.3s ease; }
-        .viewer-backdrop.active { opacity: 1; }
-        .viewer-content { transition: transform 0.1s ease-out; }
-
-        /* STREAMING_CHUNK:Styling keyframe animations... -->
-        .skeleton {
-            background: linear-gradient(90deg, #1c1d24 25%, #252630 50%, #1c1d24 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
+        .masonry-grid { 
+            column-count: 1; 
+            column-gap: 16px; 
         }
+        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1280px) { .masonry-grid { column-count: 4; } }
+        @media (min-width: 1536px) { .masonry-grid { column-count: 5; } }
+        
+        .masonry-item { 
+            break-inside: avoid; 
+            margin-bottom: 16px; 
+            border-radius: 12px;
+            display: inline-block;
+            width: 100%;
+            position: relative;
+        }
+        
+        .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0c; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        .viewer-backdrop { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background-color: rgba(0,0,0,0.85); transition: opacity 0.3s ease; opacity: 0; }
+        .viewer-backdrop.active { opacity: 1; }
+        .viewer-content { transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1); will-change: transform; cursor: grab; }
+        .viewer-content:active { cursor: grabbing; }
+
+        .lazy-hidden { opacity: 0; filter: blur(10px); transition: all 0.5s ease; }
+        .lazy-loaded { opacity: 1; filter: blur(0); }
+        
+        .skeleton { background: linear-gradient(90deg, #1a1b23 25%, #2a2b36 50%, #1a1b23 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; }
         @keyframes skeleton-loading {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
 
-        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #a855f7;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #a855f7;
+        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
     <header class="bg-darker/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-40 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <button id="btn-back" class="hidden p-2 rounded-full hover:bg-white/10 transition-colors" title="Voltar">
+                <button id="btn-back" class="hidden p-2 rounded-full hover:bg-white/10 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
-                <div class="flex items-center gap-2">
+                <div id="brand-logo" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
                     <svg class="w-7 h-7 text-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h5.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H18a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
                     <h1 id="app-title" class="text-xl font-bold tracking-tight">Folder Galery</h1>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <div id="search-container" class="hidden md:flex relative">
-                    <input type="text" id="search-input" placeholder="Pesquisar..." class="bg-panel border border-white/10 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:border-accent w-64 transition-colors">
-                    <svg class="w-4 h-4 absolute right-3 top-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+                <div id="search-container" class="hidden md:flex relative flex-shrink-0">
+                    <input type="text" id="search-input" data-i18n="searchPlaceholder" placeholder="Pesquisar..." class="bg-panel border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-accent w-56 transition-colors">
+                    <svg class="w-4 h-4 absolute right-3 top-2.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
 
-                <select id="sort-select" class="hidden bg-panel border border-white/10 rounded-full px-3 py-1.5 text-sm focus:outline-none focus:border-accent">
-                    <option value="name">Nome (A-Z)</option>
-                    <option value="photos">Mais Fotos</option>
-                    <option value="videos">Mais Vídeos</option>
-                    <option value="total">Mais Arquivos</option>
+                <select id="sort-select" class="hidden flex-shrink-0 bg-panel border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-accent cursor-pointer">
+                    <option value="name" data-i18n="sortName">Nome (A-Z)</option>
+                    <option value="photos" data-i18n="sortPhotos">Mais Fotos</option>
+                    <option value="videos" data-i18n="sortVideos">Mais Vídeos</option>
+                    <option value="total" data-i18n="sortTotal">Mais Arquivos</option>
                 </select>
 
-                <div id="filter-container" class="hidden flex items-center bg-panel border border-white/10 rounded-full p-1">
-                    <button class="filter-btn active px-3 py-1 text-xs rounded-full bg-white/10 font-medium" data-filter="all">Tudo</button>
-                    <button class="filter-btn px-3 py-1 text-xs rounded-full hover:bg-white/5 font-medium" data-filter="photo">Fotos</button>
-                    <button class="filter-btn px-3 py-1 text-xs rounded-full hover:bg-white/5 font-medium" data-filter="video">Vídeos</button>
+                <select id="media-sort-select" class="hidden flex-shrink-0 bg-panel border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-accent cursor-pointer">
+                    <option value="date-desc" data-i18n="sortMediaNewest">Mais Recentes</option>
+                    <option value="date-asc" data-i18n="sortMediaOldest">Mais Antigas</option>
+                    <option value="name-asc" data-i18n="sortMediaNameAsc">Nome (A-Z)</option>
+                    <option value="name-desc" data-i18n="sortMediaNameDesc">Nome (Z-A)</option>
+                    <option value="size-desc" data-i18n="sortMediaSizeDesc">Maior Tamanho</option>
+                    <option value="size-asc" data-i18n="sortMediaSizeAsc">Menor Tamanho</option>
+                    <option value="random" data-i18n="sortMediaRandom">Aleatório</option>
+                </select>
+
+                <div id="filter-container" class="hidden flex-shrink-0 flex items-center bg-panel border border-white/10 rounded-full p-1">
+                    <button class="filter-btn active px-4 py-1.5 text-xs rounded-full bg-white/10 font-medium whitespace-nowrap" data-filter="all" data-i18n="filterAll">Tudo</button>
+                    <button class="filter-btn px-4 py-1.5 text-xs rounded-full hover:bg-white/5 font-medium whitespace-nowrap" data-filter="photo" data-i18n="filterPhoto">Fotos</button>
+                    <button class="filter-btn px-4 py-1.5 text-xs rounded-full hover:bg-white/5 font-medium whitespace-nowrap" data-filter="video" data-i18n="filterVideo">Vídeos</button>
                 </div>
 
-                <button id="btn-discover" class="hidden bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-400 hover:to-orange-400 text-white px-4 py-1.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-pink-500/20 flex items-center gap-2 hover:scale-105">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Descobrir
+                <button id="btn-discover" class="hidden whitespace-nowrap flex-shrink-0 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2 hover:scale-105">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="btnDiscover">Descobrir</span>
                 </button>
 
-                <button id="btn-select-folder" class="bg-accent hover:bg-indigo-400 text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors shadow-lg shadow-accent/20 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Selecionar Pasta
+                <div class="h-6 w-px bg-white/10 hidden md:block mx-1"></div>
+
+                <button id="btn-reload" class="hidden p-2 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Sincronizar" data-i18n-title="tooltipSync">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
+
+                <button id="btn-settings" class="p-2 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Configurações" data-i18n-title="tooltipSettings">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
             </div>
         </div>
@@ -111,31 +143,40 @@
     <main class="flex-1 w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         <div id="splash-screen" class="flex flex-col items-center justify-center h-[70vh] text-center">
             <div class="bg-panel p-6 rounded-3xl mb-6 shadow-2xl border border-white/5">
-                <svg class="w-20 h-20 text-accent/80 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <svg class="w-20 h-20 text-accent/80 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h5.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H18a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
             </div>
-            <h2 class="text-3xl font-bold mb-3">Bem-vindo ao Folder Galery</h2>
-            <p class="text-gray-400 max-w-md mb-8">Selecione uma pasta principal do seu computador. Cada subpasta será exibida automaticamente como uma galeria com suas mídias.</p>
-            <button id="btn-splash-select" class="bg-white text-dark hover:bg-gray-200 px-8 py-3 rounded-full font-semibold transition-transform hover:scale-105 shadow-xl">
-                Selecionar Pasta Raiz
-            </button>
-            <p class="text-xs text-gray-500 mt-6 max-w-sm">Utiliza a File System Access API. Nenhum arquivo é enviado para a internet. Tudo é processado localmente no seu navegador.</p>
+            <h2 class="text-2xl font-bold mb-4" data-i18n="splashWelcome">Welcome to Folder Galery</h2>
+            <p class="text-gray-400 text-sm max-w-lg mb-8" data-i18n="splashDesc">Select a main folder on your computer. Each subfolder will be automatically displayed as a gallery with its media.</p>
+            
+            <div class="flex flex-col items-center gap-4 w-full max-w-sm">
+                <button id="btn-splash-load" class="hidden w-full bg-accent hover:bg-purple-500 text-white px-6 py-3 text-sm rounded-full font-semibold transition-transform hover:scale-105 shadow-xl shadow-accent/20 whitespace-nowrap flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span id="splash-load-text">Carregar pasta anterior</span>
+                </button>
+                
+                <button id="btn-splash-select" class="w-full bg-white text-dark hover:bg-gray-200 px-6 py-3 text-sm rounded-full font-semibold transition-transform hover:scale-105 shadow-xl whitespace-nowrap" data-i18n="splashBtn">
+                    Selecionar Pasta
+                </button>
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-8 max-w-md" data-i18n="splashDisclaimer">Uses the File System Access API. No files are sent to the internet. Everything is processed locally in your browser.</p>
         </div>
 
         <div id="loading-view" class="hidden flex-col items-center justify-center h-[60vh]">
             <div class="w-12 h-12 border-4 border-accent/30 border-t-accent rounded-full animate-spin mb-4"></div>
-            <p id="loading-text" class="text-gray-400 font-medium">Analisando pastas...</p>
+            <p id="loading-text" class="text-gray-400 text-sm font-medium" data-i18n="loadingText">Analyzing folders...</p>
         </div>
 
         <div id="home-view" class="hidden">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold">Pastas Encontradas</h2>
-                <span id="profiles-count" class="text-sm text-gray-400 bg-panel px-3 py-1 rounded-full">0 Pastas | 0.00 GBs</span>
+            <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
+                <h2 class="text-xl font-bold" data-i18n="homeTitle">Pastas Encontradas</h2>
+                <span id="profiles-count" class="text-sm text-gray-400 bg-panel px-4 py-1.5 rounded-full font-medium whitespace-nowrap">0 Pastas | 0.00 GBs</span>
             </div>
             <div id="profiles-container" class="profile-grid"></div>
             
             <div id="profiles-empty-state" class="hidden flex-col items-center justify-center py-20 text-gray-500">
                 <svg class="w-16 h-16 mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <p>Nenhuma pasta encontrada com esta pesquisa.</p>
+                <p class="text-sm" data-i18n="emptySearch">Nenhuma pasta encontrada com esta pesquisa.</p>
             </div>
         </div>
 
@@ -144,18 +185,20 @@
                 <div class="flex items-center gap-6">
                     <div id="gallery-avatar" class="w-24 h-24 rounded-2xl bg-panel shadow-xl overflow-hidden border-2 border-white/10 flex-shrink-0 skeleton"></div>
                     <div>
-                        <h2 id="gallery-title" class="text-3xl font-bold mb-2"></h2>
-                        <div class="flex gap-4 text-sm text-gray-400">
-                            <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg> <span id="gallery-photos-count">0</span> fotos</span>
-                            <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> <span id="gallery-videos-count">0</span> vídeos</span>
+                        <h2 id="gallery-title" class="text-3xl font-bold mb-3"></h2>
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-400 font-medium">
+                            <span class="flex items-center gap-1.5 whitespace-nowrap">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2 2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                <span id="gallery-photos-count">0</span> <span data-i18n="galleryPhotos">fotos</span>
+                            </span>
+                            <span class="flex items-center gap-1.5 whitespace-nowrap"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> <span id="gallery-videos-count">0</span> <span data-i18n="galleryVideos">vídeos</span></span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div id="media-container" class="masonry-grid"></div>
-            
-            <div id="empty-state" class="hidden text-center py-20 text-gray-500">Nenhuma mídia encontrada com este filtro.</div>
+            <div id="empty-state" class="hidden text-center py-20 text-sm text-gray-500" data-i18n="emptyMedia">Nenhuma mídia encontrada.</div>
         </div>
     </main>
 
@@ -168,10 +211,10 @@
         </div>
 
         <button id="viewer-prev" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/80 rounded-full text-white z-50 transition-colors hidden md:block">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
         <button id="viewer-next" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/80 rounded-full text-white z-50 transition-colors hidden md:block">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
 
         <div id="viewer-media-container" class="w-full h-full flex items-center justify-center overflow-hidden cursor-move"></div>
@@ -184,24 +227,24 @@
 
         <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-gradient-to-b from-black/80 to-transparent">
             <div class="text-white font-medium px-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 24 24"><path d="M17.58 4.08c-.28-.31-.7-.45-1.12-.39C12.82 4.19 9 7.42 9 11.5c0 .35.04.7.12 1.03-.13.06-.27.09-.41.09-1.07 0-2.07-.6-2.58-1.55-.26-.5-.88-.71-1.39-.46-.5.25-.71.86-.46 1.36.78 1.48 2.11 2.5 3.65 2.87 0 .02-.01.04-.01.06 0 2.48 2.02 4.5 4.5 4.5s4.5-2.02 4.5-4.5c0-1.08-.38-2.07-1-2.85v-1.7c0-1.89.84-3.66 2.3-4.85.34-.28.45-.75.28-1.16-.16-.42-.58-.68-1.02-.66z" opacity=".3"/><path d="M11.71 19.5c-1.93 0-3.5-1.57-3.5-3.5 0-.02.01-.04.01-.06-.5-.12-.97-.33-1.41-.63.95 1.76 2.84 2.94 4.9 2.94 3.03 0 5.5-2.47 5.5-5.5v-1.7c0-1.89.84-3.66 2.3-4.85-.35-.38-.97-.56-1.51-.43-3.17.65-6.04 3.97-6.04 7.53 0 .42.05.82.13 1.21-.14.07-.28.11-.42.11z"/></svg>
-                Modo Descobrir
+                <svg class="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 24 24"><path d="M17.58 4.08c-.28-.31-.7-.45-1.12-.39C12.82 4.19 9 7.42 9 11.5c0 .35.04.7.12 1.03-.13.06-.27.09-.41.09-1.07 0-2.07-.6-2.58-1.55-.26-.5-.88-.71-1.39-.46-.5.25-.71.86-.46 1.36.78 1.48 2.11 2.5 3.65 2.87 0 .02-.01.04-.01.06 0 2.48 2.02 4.5 4.5 4.5s4.5-2.02 4.5-4.5c0-1.08-.38-2.07-1-2.85v-1.7c0-1.89.84-3.66 2.3-4.85.34-.28.45-.75.28-1.16-.16-.42-.58-.68-1.02-.66z" opacity=".3"/><path d="M11.71 19.5c-1.93 0-3.5-1.57-3.5-3.5 0-.02.01-.04.01-.06-.5-.12-.97-.33-1.41-.63.95 1.76 2.84 2.94 4.9 2.94 3.03 0 5.5-2.47 5.5-5.5v-1.7c0-1.89.84-3.66 2.3-4.85-.35-.38-.97-.56-1.51-.43-3.17.65-6.04 3.97-6.04 7.53 0 .42.05.82.13 1.21-.14.07-.28.11-.42.11z"/></svg>
+                <span data-i18n="discoverMode">Modo Descobrir</span>
             </div>
             <div class="flex items-center gap-4">
                 <button id="discover-volume" class="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors hidden">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
                 </button>
                 <button id="discover-close" class="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
 
-        <button id="discover-prev" class="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-black/40 hover:bg-black/70 backdrop-blur-md rounded-full text-white z-50 transition-all transform hover:scale-110 hidden md:block group">
-            <svg class="w-8 h-8 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <button id="discover-prev" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/70 backdrop-blur-md rounded-full text-white z-50 transition-all transform hover:scale-110 hidden md:block group">
+            <svg class="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
-        <button id="discover-next" class="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-black/40 hover:bg-black/70 backdrop-blur-md rounded-full text-white z-50 transition-all transform hover:scale-110 hidden md:block group">
-            <svg class="w-8 h-8 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <button id="discover-next" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/70 backdrop-blur-md rounded-full text-white z-50 transition-all transform hover:scale-110 hidden md:block group">
+            <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
 
         <div id="discover-media-container" class="relative w-full h-full flex items-center justify-center z-10"></div>
@@ -209,77 +252,228 @@
         <div id="discover-area-left" class="absolute left-0 top-20 bottom-32 w-1/3 z-40"></div>
         <div id="discover-area-right" class="absolute right-0 top-20 bottom-32 w-2/3 z-40"></div>
 
-        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent pt-32 pb-8 px-6 flex items-end justify-between z-50 pointer-events-none">
+        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent pt-32 pb-8 px-8 flex items-end justify-between z-50 pointer-events-none">
             <div id="discover-profile-btn" class="flex items-center gap-4 cursor-pointer group pointer-events-auto transition-transform hover:scale-[1.02]">
-                <div id="discover-avatar" class="w-16 h-16 rounded-full border-2 border-white/80 overflow-hidden bg-gray-800 shadow-2xl flex-shrink-0 skeleton"></div>
+                <div id="discover-avatar" class="w-14 h-14 rounded-full border-2 border-white/80 overflow-hidden bg-gray-800 shadow-2xl flex-shrink-0 skeleton"></div>
                 <div>
-                    <h3 id="discover-name" class="text-white text-2xl font-bold drop-shadow-lg group-hover:text-pink-400 transition-colors flex items-center gap-2">
+                    <h3 id="discover-name" class="text-white text-lg font-bold drop-shadow-lg group-hover:text-accent transition-colors flex items-center gap-2">
                         <span id="discover-name-text"></span>
-                        <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity translate-x-[-10px] group-hover:translate-x-0 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity translate-x-[-10px] group-hover:translate-x-0 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </h3>
-                    <p class="text-white/80 text-sm drop-shadow-md">Ver galeria completa da pasta</p>
+                    <p class="text-white/80 text-xs font-medium drop-shadow-md" data-i18n="discoverProfile">Ver galeria completa da pasta</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <button id="btn-top" class="fixed bottom-6 right-6 p-3 bg-accent text-white rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-40">
+    <div id="settings-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-panel border border-white/10 rounded-2xl p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span data-i18n="settingsTitle">Configurações</span>
+                </h3>
+                <button id="btn-close-settings" class="text-gray-400 hover:text-white transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2" data-i18n="settingsLang">Idioma</label>
+                    <select id="lang-select" class="w-full bg-dark border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent cursor-pointer">
+                        <option value="auto" data-i18n="langAuto">Automático (Navegador)</option>
+                        <option value="pt">Português (Brasil)</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <div class="border-t border-white/10 pt-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-sm font-medium text-gray-300" data-i18n="settingsAnim">Miniaturas Animadas</label>
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="anim-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-600 appearance-none cursor-pointer transition-all duration-300 z-10 top-0 left-0"/>
+                            <label for="anim-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-600 cursor-pointer transition-colors duration-300"></label>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500" data-i18n="settingsAnimHint">Aviso: Ligar isso pode causar lentidão em PCs antigos ao rolar a página com muitos vídeos.</p>
+                </div>
+                
+                <div class="pt-4 border-t border-white/10">
+                    <h4 class="text-red-400 text-xs font-bold mb-3 uppercase tracking-wider" data-i18n="settingsDanger">Gerenciamento de Dados</h4>
+                    <button id="btn-disconnect" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-lg px-4 py-3 text-xs font-semibold transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <span data-i18n="settingsDisconnect">Desconectar Pasta e Limpar Dados</span>
+                    </button>
+                    <p class="text-gray-500 text-[10px] mt-2 text-center" data-i18n="settingsDisconnectHint">Isso fará o sistema esquecer a pasta atual. Nenhum arquivo será apagado do seu PC.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="btn-top" class="fixed bottom-6 right-6 p-3 bg-accent hover:bg-purple-500 text-white rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-40">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
     </button>
     <div id="notification-area" class="fixed top-20 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
+        const i18n = {
+            en: {
+                searchPlaceholder: "Search...", sortName: "Name (A-Z)", sortPhotos: "Most Photos", sortVideos: "Most Videos", sortTotal: "Most Files",
+                sortMediaNewest: "Newest First", sortMediaOldest: "Oldest First", sortMediaNameAsc: "Name (A-Z)", sortMediaNameDesc: "Name (Z-A)",
+                sortMediaSizeDesc: "Largest Size", sortMediaSizeAsc: "Smallest Size", sortMediaRandom: "Random",
+                filterAll: "All", filterPhoto: "Photos", filterVideo: "Videos", btnDiscover: "Discover",
+                splashWelcome: "Welcome to Folder Galery", splashDesc: "Select a main folder on your computer. Each subfolder will be automatically displayed as a gallery with its media.",
+                splashBtn: "Select Folder", splashDisclaimer: "Uses the File System Access API. No files are sent to the internet. Everything is processed locally in your browser.",
+                splashLoadPrev: "Load folder \"{name}\"",
+                loadingText: "Analyzing folders...", homeTitle: "Found Folders", homeCount: "{count} Folders | {size} GBs",
+                emptySearch: "No folders found with this search.", galleryPhotos: "photos", galleryVideos: "videos",
+                emptyMedia: "No media found.", discoverMode: "Discover Mode", discoverProfile: "View full folder gallery",
+                errBrowser: "Browser incompatible with folder reading.", errNoFolders: "No valid folders found.", errFS: "Failed to read the file system.",
+                errNoMedia: "No media found in folders.", errLoad: "Error loading media.", msgAnalyzing: "Analyzing: {name}",
+                cardMedia: "{total} media", cardPhotos: "{photos} photos", cardVideos: "{videos} videos",
+                tooltipSync: "Sync/Reload folder", tooltipSettings: "Settings",
+                settingsTitle: "Settings", settingsLang: "Language", langAuto: "Automatic (Browser)", 
+                settingsAnim: "Animated Thumbnails", settingsAnimHint: "Warning: Turning this on may cause lag on older PCs when scrolling with many videos.",
+                settingsDanger: "Data Management",
+                settingsDisconnect: "Disconnect Folder & Clear Data", settingsDisconnectHint: "This will make the system forget the current folder. No files will be deleted from your PC.",
+                msgSyncSuccess: "Folder synchronized successfully!", errPerm: "Permission denied or folder deleted."
+            },
+            pt: {
+                searchPlaceholder: "Pesquisar...", sortName: "Nome (A-Z)", sortPhotos: "Mais Fotos", sortVideos: "Mais Vídeos", sortTotal: "Mais Arquivos",
+                sortMediaNewest: "Mais Recentes", sortMediaOldest: "Mais Antigas", sortMediaNameAsc: "Nome (A-Z)", sortMediaNameDesc: "Nome (Z-A)",
+                sortMediaSizeDesc: "Maior Tamanho", sortMediaSizeAsc: "Menor Tamanho", sortMediaRandom: "Aleatório",
+                filterAll: "Tudo", filterPhoto: "Fotos", filterVideo: "Vídeos", btnDiscover: "Descobrir",
+                splashWelcome: "Bem-vindo ao Folder Galery", splashDesc: "Selecione uma pasta principal do seu computador. Cada subpasta será exibida automaticamente como uma galeria com suas mídias.",
+                splashBtn: "Selecionar Pasta", splashDisclaimer: "Utiliza a File System Access API. Nenhum arquivo é enviado para a internet. Tudo é processado localmente no seu navegador.",
+                splashLoadPrev: "Carregar pasta \"{name}\"",
+                loadingText: "Analisando pastas...", homeTitle: "Pastas Encontradas", homeCount: "{count} Pastas | {size} GBs",
+                emptySearch: "Nenhuma pasta encontrada com esta pesquisa.", galleryPhotos: "fotos", galleryVideos: "vídeos",
+                emptyMedia: "Nenhuma mídia encontrada.", discoverMode: "Modo Descobrir", discoverProfile: "Ver galeria completa da pasta",
+                errBrowser: "Navegador incompatível com leitura de pastas.", errNoFolders: "Nenhuma pasta válida encontrada.", errFS: "Falha ao ler o sistema de arquivos.",
+                errNoMedia: "Nenhuma mídia encontrada nas pastas.", errLoad: "Erro ao carregar mídia.", msgAnalyzing: "Analisando: {name}",
+                cardMedia: "{total} mídias", cardPhotos: "{photos} fotos", cardVideos: "{videos} vídeos",
+                tooltipSync: "Sincronizar/Recarregar pasta", tooltipSettings: "Configurações",
+                settingsTitle: "Configurações", settingsLang: "Idioma", langAuto: "Automático (Navegador)", 
+                settingsAnim: "Miniaturas Animadas", settingsAnimHint: "Aviso: Ligar isso pode causar lentidão em PCs antigos ao rolar a página com muitos vídeos.",
+                settingsDanger: "Gerenciamento de Dados",
+                settingsDisconnect: "Desconectar Pasta e Limpar Dados", settingsDisconnectHint: "Isso fará o sistema esquecer a pasta atual. Nenhum arquivo será apagado do seu PC.",
+                msgSyncSuccess: "Pasta sincronizada com sucesso!", errPerm: "Permissão negada ou pasta excluída."
+            }
+        };
+
+        const Lang = {
+            current: 'en',
+            init() {
+                const savedLang = localStorage.getItem('fg_lang');
+                if (savedLang && ['pt', 'en'].includes(savedLang)) {
+                    this.current = savedLang;
+                } else {
+                    const userLang = navigator.language || navigator.userLanguage;
+                    this.current = userLang.toLowerCase().startsWith('pt') ? 'pt' : 'en';
+                }
+                document.documentElement.lang = this.current;
+                
+                const langSelect = document.getElementById('lang-select');
+                if(langSelect) {
+                    langSelect.value = localStorage.getItem('fg_lang') || 'auto';
+                }
+                this.applyToDOM();
+            },
+            t(key, params = {}) {
+                let str = i18n[this.current][key] || key;
+                for (const [k, v] of Object.entries(params)) { str = str.replace(`{${k}}`, v); }
+                return str;
+            },
+            applyToDOM() {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.dataset.i18n;
+                    if (el.tagName === 'INPUT' && el.type === 'text') el.placeholder = this.t(key);
+                    else el.textContent = this.t(key);
+                });
+                document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                    el.title = this.t(el.dataset.i18nTitle);
+                });
+            }
+        };
+
+        function showNotif(msg) {
+            const area = document.getElementById('notification-area');
+            const notif = document.createElement('div');
+            notif.className = 'bg-panel text-white px-4 py-3 rounded-xl shadow-2xl border border-white/10 flex items-center gap-3 transform translate-x-full transition-transform duration-300 pointer-events-auto text-sm font-medium';
+            notif.innerHTML = `<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${msg}</span>`;
+            area.appendChild(notif);
+            requestAnimationFrame(() => notif.classList.remove('translate-x-full'));
+            setTimeout(() => { notif.classList.add('translate-x-full'); setTimeout(() => notif.remove(), 300); }, 3000);
+        }
+
+        const DB = {
+            dbName: 'FolderGaleryDB',
+            storeName: 'handles',
+            async getDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, 1);
+                    request.onupgradeneeded = (e) => { e.target.result.createObjectStore(this.storeName); };
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            async saveHandle(handle) {
+                const db = await this.getDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(this.storeName, 'readwrite');
+                    tx.objectStore(this.storeName).put(handle, 'rootDirectory');
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            },
+            async getHandle() {
+                const db = await this.getDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(this.storeName, 'readonly');
+                    const request = tx.objectStore(this.storeName).get('rootDirectory');
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(tx.error);
+                });
+            },
+            async clearHandle() {
+                const db = await this.getDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(this.storeName, 'readwrite');
+                    tx.objectStore(this.storeName).delete('rootDirectory');
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+        };
+
         const Config = {
             photoExts: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'avif'],
             videoExts: ['mp4', 'webm', 'mov', 'mkv', 'avi', 'm4v'],
-            isFileSupported: (name) => {
-                const ext = name.split('.').pop().toLowerCase();
-                if (Config.photoExts.includes(ext)) return 'photo';
-                if (Config.videoExts.includes(ext)) return 'video';
+            isFileSupported(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                if (this.photoExts.includes(ext)) return 'photo';
+                if (this.videoExts.includes(ext)) return 'video';
                 return null;
             }
         };
 
-        const showNotif = (msg) => {
-            const el = document.createElement('div');
-            el.className = 'bg-red-500 text-white px-4 py-3 rounded-lg shadow-xl transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto';
-            el.textContent = msg;
-            document.getElementById('notification-area').appendChild(el);
-            setTimeout(() => el.classList.remove('translate-x-full', 'opacity-0'), 10);
-            setTimeout(() => {
-                el.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => el.remove(), 300);
-            }, 4000);
-        };
-
         const Store = {
-            profiles: [],
-            currentProfile: null,
-            filteredMedia: [],
-            globalMedia: [],
-            searchTerm: '',
-            sortMode: 'name',
-            mediaFilter: 'all',
-            objectURLs: new Map(),
-
+            rootHandle: null, profiles: [], currentProfile: null, mediaFilter: 'all', sortMode: 'name', mediaSortMode: 'date-desc', searchTerm: '',
+            objectURLs: new Map(), globalMedia: [], animatedThumbs: false,
+            
             async getObjectURL(fileHandle) {
-                if (this.objectURLs.has(fileHandle)) return this.objectURLs.get(fileHandle);
+                if (this.objectURLs.has(fileHandle.name)) return this.objectURLs.get(fileHandle.name);
                 const file = await fileHandle.getFile();
                 const url = URL.createObjectURL(file);
-                this.objectURLs.set(fileHandle, url);
+                this.objectURLs.set(fileHandle.name, url);
                 return url;
             },
-
             clearObjectURLs() {
                 this.objectURLs.forEach(url => URL.revokeObjectURL(url));
                 this.objectURLs.clear();
             },
-
             buildGlobalMedia() {
                 let allMedia = [];
-                this.profiles.forEach(profile => {
-                    profile.files.forEach(file => allMedia.push({ profile: profile, file: file }));
-                });
+                this.profiles.forEach(profile => { profile.files.forEach(file => allMedia.push({ profile: profile, file: file })); });
                 for (let i = allMedia.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [allMedia[i], allMedia[j]] = [allMedia[j], allMedia[i]];
@@ -291,36 +485,29 @@
         const FS = {
             async selectDirectory() {
                 try {
-                    if (!window.showDirectoryPicker) {
-                        showNotif("Navegador incompatível com leitura de pastas.");
-                        return false;
-                    }
+                    if (!window.showDirectoryPicker) { showNotif(Lang.t('errBrowser')); return null; }
                     return await window.showDirectoryPicker();
-                } catch (err) {
-                    return null;
-                }
+                } catch (err) { return null; }
             },
-
+            async verifyPermission(fileHandle) {
+                const options = { mode: 'read' };
+                if ((await fileHandle.queryPermission(options)) === 'granted') return true;
+                if ((await fileHandle.requestPermission(options)) === 'granted') return true;
+                return false;
+            },
             async analyzeProfiles(rootHandle, progressCallback) {
                 const profiles = [];
                 for await (const entry of rootHandle.values()) {
                     if (entry.kind === 'directory') {
-                        progressCallback(`Analisando: ${entry.name}`);
+                        progressCallback(Lang.t('msgAnalyzing', {name: entry.name}));
                         const profile = await this.readProfileFolder(entry);
                         if (profile.files.length > 0) profiles.push(profile);
                     }
                 }
                 return profiles;
             },
-
             async readProfileFolder(dirHandle) {
-                const profile = {
-                    id: crypto.randomUUID(),
-                    name: dirHandle.name,
-                    files: [], photos: 0, videos: 0, sizeBytes: 0,
-                    avatarHandle: null, bannerHandle: null
-                };
-
+                const profile = { id: crypto.randomUUID(), name: dirHandle.name, files: [], photos: 0, videos: 0, sizeBytes: 0, avatarHandle: null, bannerHandle: null };
                 const mediaHandles = [];
                 const promises = [];
 
@@ -331,7 +518,7 @@
                             if (type) {
                                 promises.push(
                                     entry.getFile().then(file => {
-                                        mediaHandles.push({ handle: entry, type: type, name: entry.name, date: file.lastModified });
+                                        mediaHandles.push({ handle: entry, type: type, name: entry.name, date: file.lastModified, size: file.size });
                                         profile.sizeBytes += file.size;
                                         if (type === 'photo') profile.photos++;
                                         if (type === 'video') profile.videos++;
@@ -346,7 +533,6 @@
 
                 await scanFolder(dirHandle);
                 await Promise.all(promises);
-
                 mediaHandles.sort((a, b) => b.date - a.date);
                 profile.files = mediaHandles;
 
@@ -355,9 +541,7 @@
                     const r1 = Math.floor(Math.random() * photoHandles.length);
                     profile.avatarHandle = photoHandles[r1];
                     let r2 = r1;
-                    if (photoHandles.length > 1) {
-                        while(r2 === r1) r2 = Math.floor(Math.random() * photoHandles.length);
-                    }
+                    if (photoHandles.length > 1) { while(r2 === r1) r2 = Math.floor(Math.random() * photoHandles.length); }
                     profile.bannerHandle = photoHandles[r2];
                 }
                 return profile;
@@ -376,7 +560,7 @@
                                 let handle;
                                 if (el.dataset.context === 'profile') {
                                     const p = Store.profiles.find(p => p.id === el.dataset.profileId);
-                                    handle = el.dataset.type === 'avatar' ? p.avatarHandle : p.bannerHandle;
+                                    if(p) handle = el.dataset.type === 'avatar' ? p.avatarHandle : p.bannerHandle;
                                 } else {
                                     const media = Store.currentProfile.files.find(f => f.handle.name === el.dataset.handleId);
                                     if(media) handle = media.handle;
@@ -398,9 +582,7 @@
                     });
                 }, { rootMargin: '200px 0px' });
             },
-            observe(element) {
-                if(this.observer) this.observer.observe(element);
-            }
+            observe(element) { if(this.observer) this.observer.observe(element); }
         };
 
         const UI = {
@@ -415,14 +597,15 @@
                 search: document.getElementById('search-container'),
                 searchInput: document.getElementById('search-input'),
                 sort: document.getElementById('sort-select'),
+                mediaSort: document.getElementById('media-sort-select'),
                 filter: document.getElementById('filter-container'),
                 btnBack: document.getElementById('btn-back'),
-                btnSelectFolder: document.getElementById('btn-select-folder'),
-                btnSplashSelect: document.getElementById('btn-splash-select'),
                 btnDiscover: document.getElementById('btn-discover'),
+                btnReload: document.getElementById('btn-reload'),
+                btnSettings: document.getElementById('btn-settings'),
                 btnTop: document.getElementById('btn-top'),
                 profilesCount: document.getElementById('profiles-count'),
-                appTitle: document.getElementById('app-title')
+                settingsModal: document.getElementById('settings-modal')
             },
 
             showLoading(text) {
@@ -430,40 +613,51 @@
                 this.els.home.classList.add('hidden');
                 this.els.gallery.classList.add('hidden');
                 this.els.loading.classList.remove('hidden');
+                this.els.loading.classList.add('flex');
                 this.els.loadingText.textContent = text;
                 this.els.search.classList.add('hidden');
                 this.els.sort.classList.add('hidden');
+                this.els.mediaSort.classList.add('hidden');
                 this.els.filter.classList.add('hidden');
                 this.els.btnBack.classList.add('hidden');
                 this.els.btnDiscover.classList.add('hidden');
+                this.els.btnReload.classList.add('hidden');
+                this.els.btnSettings.classList.add('hidden');
             },
 
             showHome() {
                 this.els.loading.classList.add('hidden');
+                this.els.loading.classList.remove('flex');
                 this.els.gallery.classList.add('hidden');
                 this.els.splash.classList.add('hidden');
                 this.els.home.classList.remove('hidden');
                 this.els.search.classList.remove('hidden');
                 this.els.sort.classList.remove('hidden');
+                this.els.mediaSort.classList.add('hidden');
                 this.els.filter.classList.add('hidden');
                 this.els.btnBack.classList.add('hidden');
                 this.els.btnDiscover.classList.remove('hidden');
-                this.els.appTitle.textContent = 'Folder Galery';
+                this.els.btnReload.classList.remove('hidden');
+                this.els.btnSettings.classList.remove('hidden');
                 this.renderProfiles();
             },
 
             showGallery(profile) {
                 Store.currentProfile = profile;
                 Store.mediaFilter = 'all';
-                Store.clearObjectURLs();
+                Store.mediaSortMode = 'date-desc';
+                document.getElementById('media-sort-select').value = 'date-desc';
+                
                 this.els.home.classList.add('hidden');
                 this.els.gallery.classList.remove('hidden');
                 this.els.search.classList.add('hidden');
                 this.els.sort.classList.add('hidden');
+                this.els.mediaSort.classList.remove('hidden');
                 this.els.filter.classList.remove('hidden');
                 this.els.filter.classList.add('flex');
                 this.els.btnBack.classList.remove('hidden');
-                this.els.appTitle.textContent = profile.name;
+                this.els.btnDiscover.classList.add('hidden');
+                this.els.btnReload.classList.add('hidden');
 
                 document.querySelectorAll('.filter-btn').forEach(b => {
                     b.classList.remove('bg-white/10');
@@ -511,41 +705,39 @@
 
                 const totalBytes = profiles.reduce((sum, p) => sum + p.sizeBytes, 0);
                 const totalGB = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
-                this.els.profilesCount.textContent = `${profiles.length} Pastas | ${totalGB} GBs`;
+                this.els.profilesCount.textContent = Lang.t('homeCount', {count: profiles.length, size: totalGB});
                 this.els.profilesContainer.innerHTML = '';
                 
                 const emptyState = document.getElementById('profiles-empty-state');
-                if (emptyState) {
-                    if (profiles.length === 0) {
-                        emptyState.classList.remove('hidden');
-                        emptyState.classList.add('flex');
-                    } else {
-                        emptyState.classList.add('hidden');
-                        emptyState.classList.remove('flex');
-                    }
+                if (profiles.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                } else {
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
                 }
 
                 profiles.forEach(profile => {
                     const card = document.createElement('div');
-                    card.className = 'bg-panel rounded-2xl overflow-hidden shadow-lg border border-white/5 hover:border-white/20 transition-all hover:-translate-y-1 cursor-pointer group';
+                    card.className = 'bg-panel rounded-2xl overflow-hidden shadow-lg border border-white/5 hover:border-white/20 transition-all hover:-translate-y-1 cursor-pointer group flex flex-col';
                     card.onclick = () => this.showGallery(profile);
 
                     const bannerHTML = profile.bannerHandle 
-                        ? `<div class="h-32 w-full skeleton relative overflow-hidden"><img data-context="profile" data-profile-id="${profile.id}" data-type="banner" data-handle-id="banner" class="w-full h-full object-cover lazy-hidden group-hover:scale-105 transition-transform duration-500"><div class="absolute inset-0 bg-gradient-to-t from-panel to-transparent"></div></div>`
-                        : `<div class="h-32 w-full bg-gradient-to-br from-indigo-900/50 to-purple-900/50 relative"><div class="absolute inset-0 bg-gradient-to-t from-panel to-transparent"></div></div>`;
+                        ? `<div class="h-28 w-full skeleton relative overflow-hidden"><img data-context="profile" data-profile-id="${profile.id}" data-type="banner" data-handle-id="banner" class="w-full h-full object-cover lazy-hidden group-hover:scale-105 transition-transform duration-500"><div class="absolute inset-0 bg-gradient-to-t from-panel to-transparent"></div></div>`
+                        : `<div class="h-28 w-full bg-gradient-to-br from-indigo-900/50 to-purple-900/50 relative"><div class="absolute inset-0 bg-gradient-to-t from-panel to-transparent"></div></div>`;
 
                     const avatarHTML = profile.avatarHandle
-                        ? `<div class="w-16 h-16 rounded-full border-4 border-panel skeleton absolute -bottom-8 left-4 overflow-hidden z-10 shadow-lg"><img data-context="profile" data-profile-id="${profile.id}" data-type="avatar" data-handle-id="avatar" class="w-full h-full object-cover lazy-hidden"></div>`
-                        : `<div class="w-16 h-16 rounded-full border-4 border-panel bg-gray-800 flex items-center justify-center text-xl font-bold absolute -bottom-8 left-4 z-10 shadow-lg">${profile.name.charAt(0)}</div>`;
+                        ? `<div class="w-14 h-14 rounded-full border-[3px] border-panel skeleton absolute -bottom-7 left-4 overflow-hidden z-10 shadow-lg"><img data-context="profile" data-profile-id="${profile.id}" data-type="avatar" data-handle-id="avatar" class="w-full h-full object-cover lazy-hidden"></div>`
+                        : `<div class="w-14 h-14 rounded-full border-[3px] border-panel bg-gray-800 flex items-center justify-center text-base font-bold absolute -bottom-7 left-4 z-10 shadow-lg">${profile.name.charAt(0)}</div>`;
 
                     card.innerHTML = `
-                        <div class="relative mb-10">${bannerHTML}${avatarHTML}</div>
-                        <div class="p-5 pt-0">
-                            <h3 class="font-bold text-lg mb-1 line-clamp-1 group-hover:text-accent transition-colors">${profile.name}</h3>
-                            <div class="text-xs text-gray-400 flex flex-wrap gap-x-3 gap-y-1">
-                                <span>${profile.files.length} mídias</span>
-                                <span>${profile.photos} fotos</span>
-                                <span>${profile.videos} vídeos</span>
+                        <div class="relative mb-9">${bannerHTML}${avatarHTML}</div>
+                        <div class="p-4 pt-0">
+                            <h3 class="font-bold text-base mb-1.5 line-clamp-1 group-hover:text-accent transition-colors">${profile.name}</h3>
+                            <div class="text-xs text-gray-400 font-medium flex flex-wrap gap-x-3 gap-y-1">
+                                <span>${Lang.t('cardMedia', {total: profile.files.length})}</span>
+                                <span>${Lang.t('cardPhotos', {photos: profile.photos})}</span>
+                                <span>${Lang.t('cardVideos', {videos: profile.videos})}</span>
                             </div>
                         </div>`;
                     this.els.profilesContainer.appendChild(card);
@@ -556,19 +748,28 @@
             renderMedia() {
                 const profile = Store.currentProfile;
                 if (!profile) return;
+                let media = [...profile.files];
+                
+                if (Store.mediaSortMode === 'date-desc') media.sort((a, b) => b.date - a.date);
+                else if (Store.mediaSortMode === 'date-asc') media.sort((a, b) => a.date - b.date);
+                else if (Store.mediaSortMode === 'name-asc') media.sort((a, b) => a.name.localeCompare(b.name));
+                else if (Store.mediaSortMode === 'name-desc') media.sort((a, b) => b.name.localeCompare(a.name));
+                else if (Store.mediaSortMode === 'size-desc') media.sort((a, b) => b.size - a.size);
+                else if (Store.mediaSortMode === 'size-asc') media.sort((a, b) => a.size - b.size);
+                else if (Store.mediaSortMode === 'random') media.sort(() => Math.random() - 0.5);
 
-                let media = profile.files;
                 if (Store.mediaFilter === 'photo') media = media.filter(m => m.type === 'photo');
                 if (Store.mediaFilter === 'video') media = media.filter(m => m.type === 'video');
 
                 Store.filteredMedia = media;
                 this.els.mediaContainer.innerHTML = '';
                 
+                const emptyState = document.getElementById('empty-state');
                 if (media.length === 0) {
-                    document.getElementById('empty-state').classList.remove('hidden');
+                    emptyState.classList.remove('hidden');
                     return;
                 } else {
-                    document.getElementById('empty-state').classList.add('hidden');
+                    emptyState.classList.add('hidden');
                 }
 
                 const fragment = document.createDocumentFragment();
@@ -577,29 +778,55 @@
                     el.className = 'masonry-item rounded-xl overflow-hidden bg-panel skeleton relative group cursor-pointer shadow-md';
                     el.onclick = () => Viewer.open(index);
 
-                    const randomHeights = ['h-48', 'h-64', 'h-80', 'h-96'];
+                    const randomHeights = ['h-48', 'h-64', 'h-72'];
                     const fakeHeight = randomHeights[index % randomHeights.length];
                     el.classList.add(fakeHeight);
 
+                    const scaleClass = Store.animatedThumbs ? 'hover:scale-105 transition-transform duration-500' : 'transition-transform duration-500 hover:scale-105';
+                    
                     if (item.type === 'photo') {
-                        el.innerHTML = `<img data-handle-id="${item.handle.name}" data-context="media" class="w-full h-full object-cover lazy-hidden hover:scale-105 transition-transform duration-500 absolute inset-0">`;
+                        el.innerHTML = `<img data-handle-id="${item.handle.name}" data-context="media" class="w-full h-full object-cover lazy-hidden hover:scale-105 transition-transform duration-500 block">`;
                     } else {
-                        el.innerHTML = `<video data-handle-id="${item.handle.name}" data-context="media" class="w-full h-full object-cover lazy-hidden absolute inset-0" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><div class="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full text-white backdrop-blur-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
+                        const hoverEvents = Store.animatedThumbs ? 'onmouseover="this.play()" onmouseout="this.pause()"' : '';
+                        const dynamicClasses = Store.animatedThumbs ? 'hover:scale-105 transition-transform duration-500' : '';
+                        el.innerHTML = `<video data-handle-id="${item.handle.name}" data-context="media" class="w-full h-full object-cover lazy-hidden block ${dynamicClasses}" muted loop ${hoverEvents}></video><div class="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full text-white backdrop-blur-sm z-10 pointer-events-none"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
                     }
 
                     const overlay = document.createElement('div');
-                    overlay.className = 'absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3 pointer-events-none';
-                    overlay.innerHTML = `<span class="text-xs font-medium truncate text-white/90 drop-shadow-md">${item.name}</span>`;
+                    overlay.className = 'absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3 pointer-events-none z-10';
+                    overlay.innerHTML = `<span class="text-sm font-medium truncate text-white/90 drop-shadow-md">${item.name}</span>`;
                     el.appendChild(overlay);
                     fragment.appendChild(el);
                     
                     const mediaTag = el.querySelector('img, video');
-                    const resetHeight = () => { el.classList.remove(...randomHeights); el.classList.add('h-auto'); };
+                    const resetHeight = () => { 
+                        el.classList.remove(...randomHeights); 
+                        el.classList.add('h-auto'); 
+                        mediaTag.classList.remove('h-full', 'object-cover');
+                        mediaTag.classList.add('h-auto');
+                    };
                     if (item.type === 'photo') mediaTag.onload = resetHeight;
                     else mediaTag.onloadeddata = resetHeight;
                     LazyLoader.observe(mediaTag);
                 });
                 this.els.mediaContainer.appendChild(fragment);
+            },
+            
+            toggleSettings(show) {
+                if (show) {
+                    this.els.settingsModal.classList.remove('hidden');
+                    this.els.settingsModal.classList.add('flex');
+                    void this.els.settingsModal.offsetWidth;
+                    this.els.settingsModal.classList.remove('opacity-0');
+                    this.els.settingsModal.querySelector('div').classList.remove('scale-95');
+                } else {
+                    this.els.settingsModal.classList.add('opacity-0');
+                    this.els.settingsModal.querySelector('div').classList.add('scale-95');
+                    setTimeout(() => {
+                        this.els.settingsModal.classList.add('hidden');
+                        this.els.settingsModal.classList.remove('flex');
+                    }, 300);
+                }
             }
         };
 
@@ -615,7 +842,6 @@
                 areaLeft: document.getElementById('viewer-area-left'),
                 areaRight: document.getElementById('viewer-area-right')
             },
-
             init() {
                 this.els.btnClose.addEventListener('click', () => this.close());
                 this.els.btnPrev.addEventListener('click', (e) => { e.stopPropagation(); this.prev(); });
@@ -639,7 +865,8 @@
                     this.zoom(e.deltaY > 0 ? -0.1 : 0.1);
                 }, { passive: false });
 
-                this.els.mediaBox.addEventListener('dblclick', () => {
+                this.els.mediaBox.addEventListener('dblclick', (e) => {
+                    if(e.target.tagName !== 'IMG') return;
                     if (this.scale > 1) { this.scale = 1; this.posX = 0; this.posY = 0; } else this.scale = 2;
                     this.updateTransform();
                 });
@@ -664,7 +891,6 @@
                     this.els.mediaBox.style.cursor = 'move';
                 });
             },
-
             async open(index) {
                 this.currentIndex = index; this.isOpen = true;
                 this.els.container.classList.remove('hidden');
@@ -673,7 +899,6 @@
                 document.body.style.overflow = 'hidden';
                 this.renderCurrent();
             },
-
             close() {
                 this.isOpen = false;
                 this.els.container.classList.remove('active');
@@ -683,28 +908,24 @@
                     document.body.style.overflow = 'auto';
                 }, 300);
             },
-
             prev() { if (this.currentIndex > 0) { this.currentIndex--; this.renderCurrent(); } },
             next() { if (this.currentIndex < Store.filteredMedia.length - 1) { this.currentIndex++; this.renderCurrent(); } },
-
             zoom(delta) {
                 this.scale += delta;
                 if (this.scale < 1) { this.scale = 1; this.posX = 0; this.posY = 0; }
                 if (this.scale > 5) this.scale = 5;
                 this.updateTransform();
             },
-
             updateTransform() {
                 const el = this.els.mediaBox.firstElementChild;
                 if (el) el.style.transform = `translate(${this.posX}px, ${this.posY}px) scale(${this.scale})`;
             },
-
             async renderCurrent() {
                 const media = Store.filteredMedia[this.currentIndex];
                 if (!media) return;
                 this.scale = 1; this.posX = 0; this.posY = 0;
                 this.els.counter.textContent = `${this.currentIndex + 1} / ${Store.filteredMedia.length}`;
-                this.els.mediaBox.innerHTML = `<div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>`;
+                this.els.mediaBox.innerHTML = `<div class="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>`;
 
                 try {
                     const url = await Store.getObjectURL(media.handle);
@@ -725,7 +946,7 @@
                     this.els.btnPrev.style.display = this.currentIndex === 0 ? 'none' : 'block';
                     this.els.btnNext.style.display = this.currentIndex === Store.filteredMedia.length - 1 ? 'none' : 'block';
                 } catch (e) {
-                    this.els.mediaBox.innerHTML = `<div class="text-red-400">Erro ao carregar mídia.</div>`;
+                    this.els.mediaBox.innerHTML = `<div class="text-red-400">${Lang.t('errLoad')}</div>`;
                 }
             }
         };
@@ -746,7 +967,6 @@
                 nameText: document.getElementById('discover-name-text'),
                 btnVolume: document.getElementById('discover-volume')
             },
-
             init() {
                 this.els.btnClose.addEventListener('click', () => this.close());
                 this.els.btnPrev.addEventListener('click', () => this.prev());
@@ -784,46 +1004,38 @@
                     }
                 });
             },
-
             updateVolumeIcon() {
                 if(this.isMuted) {
-                    this.els.btnVolume.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>`;
+                    this.els.btnVolume.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>`;
                 } else {
-                    this.els.btnVolume.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>`;
+                    this.els.btnVolume.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>`;
                 }
             },
-
             open() {
                 if (Store.profiles.length === 0) return;
                 Store.buildGlobalMedia();
-                if (Store.globalMedia.length === 0) {
-                    showNotif("Nenhuma mídia encontrada nas pastas.");
-                    return;
-                }
+                if (Store.globalMedia.length === 0) { showNotif(Lang.t('errNoMedia')); return; }
                 this.currentIndex = 0;
                 this.isOpen = true;
                 this.els.container.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
                 this.renderCurrent();
             },
-
             close() {
                 this.isOpen = false;
                 this.els.container.classList.add('hidden');
                 this.els.mediaBox.innerHTML = '';
                 document.body.style.overflow = 'auto';
             },
-
             prev() { if (this.currentIndex > 0) { this.currentIndex--; this.renderCurrent(); } },
             next() { if (this.currentIndex < Store.globalMedia.length - 1) { this.currentIndex++; this.renderCurrent(); } },
-
             async renderCurrent() {
                 const item = Store.globalMedia[this.currentIndex];
                 if (!item) return;
 
                 this.els.mediaBox.classList.remove('scale-100', 'opacity-100');
                 this.els.mediaBox.classList.add('scale-95', 'opacity-0');
-                this.els.mediaBox.innerHTML = `<div class="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin"></div>`;
+                this.els.mediaBox.innerHTML = `<div class="w-10 h-10 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin"></div>`;
                 this.els.btnVolume.classList.add('hidden');
 
                 this.els.nameText.textContent = item.profile.name;
@@ -858,37 +1070,39 @@
                         this.els.avatarBox.classList.remove('skeleton');
                     } else {
                         this.els.avatarBox.classList.remove('skeleton');
-                        this.els.avatarBox.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-xl font-bold text-gray-400">${item.profile.name.charAt(0)}</div>`;
+                        this.els.avatarBox.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-lg font-bold text-gray-400">${item.profile.name.charAt(0)}</div>`;
                     }
 
                     this.els.btnPrev.style.display = this.currentIndex === 0 ? 'none' : 'block';
                     this.els.btnNext.style.display = this.currentIndex === Store.globalMedia.length - 1 ? 'none' : 'block';
                 } catch (e) {
-                    this.els.mediaBox.innerHTML = `<div class="text-red-400">Erro ao carregar mídia.</div>`;
+                    this.els.mediaBox.innerHTML = `<div class="text-red-400">${Lang.t('errLoad')}</div>`;
                 }
             }
         };
 
         const App = {
-            init() {
-                LazyLoader.init();
-                Viewer.init();
-                DiscoverMode.init();
+            async init() {
+                Lang.init(); LazyLoader.init(); Viewer.init(); DiscoverMode.init();
 
-                UI.els.btnSelectFolder.addEventListener('click', () => this.handleFolderSelection());
-                UI.els.btnSplashSelect.addEventListener('click', () => this.handleFolderSelection());
+                const savedAnim = localStorage.getItem('fg_animated_thumbs');
+                if(savedAnim !== null) {
+                    Store.animatedThumbs = savedAnim === 'true';
+                    document.getElementById('anim-toggle').checked = Store.animatedThumbs;
+                }
+
+                document.getElementById('btn-splash-select').addEventListener('click', () => this.handleFolderSelection());
+                document.getElementById('btn-splash-load').addEventListener('click', () => this.loadExistingFolder());
                 UI.els.btnDiscover.addEventListener('click', () => DiscoverMode.open());
                 UI.els.btnBack.addEventListener('click', () => UI.showHome());
+                UI.els.btnReload.addEventListener('click', () => this.syncFolder());
+                UI.els.btnSettings.addEventListener('click', () => UI.toggleSettings(true));
+                document.getElementById('btn-close-settings').addEventListener('click', () => UI.toggleSettings(false));
 
-                UI.els.searchInput.addEventListener('input', (e) => {
-                    Store.searchTerm = e.target.value;
-                    UI.renderProfiles();
-                });
-
-                UI.els.sort.addEventListener('change', (e) => {
-                    Store.sortMode = e.target.value;
-                    UI.renderProfiles();
-                });
+                document.getElementById('brand-logo').addEventListener('click', () => { if (Store.profiles.length > 0) UI.showHome(); });
+                UI.els.searchInput.addEventListener('input', (e) => { Store.searchTerm = e.target.value; UI.renderProfiles(); });
+                UI.els.sort.addEventListener('change', (e) => { Store.sortMode = e.target.value; UI.renderProfiles(); });
+                UI.els.mediaSort.addEventListener('change', (e) => { Store.mediaSortMode = e.target.value; UI.renderMedia(); });
 
                 document.querySelectorAll('.filter-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -903,15 +1117,65 @@
                     if (window.scrollY > 300) UI.els.btnTop.classList.remove('opacity-0', 'pointer-events-none');
                     else UI.els.btnTop.classList.add('opacity-0', 'pointer-events-none');
                 });
-
                 UI.els.btnTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+                document.getElementById('lang-select').addEventListener('change', (e) => {
+                    const val = e.target.value;
+                    if(val === 'auto') localStorage.removeItem('fg_lang');
+                    else localStorage.setItem('fg_lang', val);
+                    window.location.reload();
+                });
+
+                document.getElementById('anim-toggle').addEventListener('change', (e) => {
+                    Store.animatedThumbs = e.target.checked;
+                    localStorage.setItem('fg_animated_thumbs', Store.animatedThumbs);
+                    if(Store.currentProfile) UI.renderMedia();
+                });
+
+                document.getElementById('btn-disconnect').addEventListener('click', async () => {
+                    await DB.clearHandle();
+                    window.location.reload();
+                });
+
+                try {
+                    const handle = await DB.getHandle();
+                    if (handle) {
+                        Store.rootHandle = handle;
+                        document.getElementById('btn-splash-load').classList.remove('hidden');
+                        document.getElementById('splash-load-text').textContent = Lang.t('splashLoadPrev', {name: handle.name});
+                    }
+                } catch(e) {}
+            },
+
+            async loadExistingFolder() {
+                if (!Store.rootHandle) return;
+                const hasPerm = await FS.verifyPermission(Store.rootHandle);
+                if (!hasPerm) {
+                    showNotif(Lang.t('errPerm'));
+                    document.getElementById('btn-splash-load').classList.add('hidden');
+                    return;
+                }
+                await this.processFolder(Store.rootHandle);
             },
 
             async handleFolderSelection() {
                 const dirHandle = await FS.selectDirectory();
                 if (!dirHandle) return;
+                await DB.saveHandle(dirHandle);
+                Store.rootHandle = dirHandle;
+                await this.processFolder(dirHandle);
+            },
 
-                UI.showLoading("Lendo estrutura de pastas e extraindo metadados...");
+            async syncFolder() {
+                if (!Store.rootHandle) return;
+                UI.showLoading(Lang.t('msgAnalyzing', {name: Store.rootHandle.name}));
+                await this.processFolder(Store.rootHandle);
+                showNotif(Lang.t('msgSyncSuccess'));
+            },
+
+            async processFolder(dirHandle) {
+                UI.showLoading(Lang.t('msgAnalyzing', {name: dirHandle.name}));
+                UI.toggleSettings(false);
                 Store.clearObjectURLs();
                 Store.profiles = [];
 
@@ -923,14 +1187,15 @@
                     if (Store.profiles.length > 0) {
                         UI.showHome();
                     } else {
-                        showNotif("Nenhuma pasta válida encontrada.");
+                        showNotif(Lang.t('errNoFolders'));
                         UI.els.loading.classList.add('hidden');
                         UI.els.splash.classList.remove('hidden');
                     }
                 } catch (error) {
-                    showNotif("Falha ao ler o sistema de arquivos.");
+                    showNotif(Lang.t('errFS'));
                     UI.els.loading.classList.add('hidden');
                     UI.els.splash.classList.remove('hidden');
+                    await DB.clearHandle();
                 }
             }
         };
