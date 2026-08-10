@@ -1,0 +1,138 @@
+:root {
+    color-scheme: dark;
+}
+
+body {
+    background-color: #0f1014;
+    color: #ffffff;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.masonry-grid {
+    column-count: 1;
+    column-gap: 16px;
+}
+
+@media (min-width: 640px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 1280px) {
+    .masonry-grid {
+        column-count: 4;
+    }
+}
+
+@media (min-width: 1536px) {
+    .masonry-grid {
+        column-count: 5;
+    }
+}
+
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.viewer-backdrop {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background-color: rgba(0, 0, 0, 0.85);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.viewer-backdrop.active {
+    opacity: 1;
+}
+
+.viewer-content {
+    transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1);
+    will-change: transform;
+    cursor: grab;
+}
+
+.viewer-content:active {
+    cursor: grabbing;
+}
+
+.lazy-hidden {
+    opacity: 0;
+    filter: blur(10px);
+    transition: all 0.5s ease;
+}
+
+.lazy-loaded {
+    opacity: 1;
+    filter: blur(0);
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #1a1b23 25%, #2a2b36 50%, #1a1b23 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.toggle-checkbox {
+    right: 0;
+    border-color: #a855f7;
+    transform: translateX(0%);
+}
+
+.toggle-checkbox:checked {
+    transform: translateX(100%);
+}
+
+.toggle-label {
+    background-color: #4b5563;
+}
+
+.toggle-checkbox:checked+.toggle-label {
+    background-color: #a855f7;
+}
