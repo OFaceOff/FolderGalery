@@ -775,6 +775,7 @@ const App = {
         document.getElementById('btn-splash-load').addEventListener('click', () => this.loadExistingFolders());
         UI.els.btnDiscover.addEventListener('click', () => DiscoverMode.open());
         UI.els.btnBack.addEventListener('click', () => UI.showHome());
+        UI.els.btnAddFolder.addEventListener('click', () => this.handleFolderSelection());
         UI.els.btnReload.addEventListener('click', () => this.syncFolder());
         UI.els.btnSettings.addEventListener('click', () => UI.toggleSettings(true));
         document.getElementById('btn-close-settings').addEventListener('click', () => UI.toggleSettings(false));
